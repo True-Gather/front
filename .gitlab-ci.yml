@@ -1,0 +1,34 @@
+stages: [install, security, build]
+
+default:
+  image: node:20-alpine
+
+install_front:
+  stage: install
+  script:
+    - cd front
+    - npm ci
+  artifacts:
+    paths:
+      - front/node_modules/
+      - front/package-lock.json
+    expire_in: 1 day
+
+dependency_audit:
+  stage: security
+  dependencies: ["install_front"]
+  script:
+    - cd front
+    - npm audit --audit-level=high
+  allow_failure: true
+
+build_front:
+  stage: build
+  dependencies: ["install_front"]
+  script:
+    - cd front
+    - npm run build
+  artifacts:
+    paths:
+      - front/.output
+    expire_in: 1 week
