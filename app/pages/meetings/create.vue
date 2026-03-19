@@ -49,13 +49,13 @@
 
           <div class="tg-preview-chips">
             <span
-              v-for="person in fakeParticipants"
+              v-for="person in parsedParticipants"
               :key="person.email"
               class="tg-participant-chip"
             >
               <span class="tg-participant-avatar">{{ person.initials }}</span>
               <span class="tg-participant-text">
-                <strong>{{ person.name }}</strong>
+                <strong>{{ person.displayName }}</strong>
                 <small>{{ person.email }}</small>
               </span>
             </span>
@@ -116,38 +116,47 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-
-type FakeParticipant = {
-  name: string
-  email: string
-  initials: string
-}
+import { computed, onBeforeUnmount, ref } from 'vue'
 
 const meetingName = ref('Kickoff produit – TrueGather')
 const participants = ref(
   'alice@truegather.io, mathis@truegather.io, lea@truegather.io'
 )
 const showFeedback = ref(false)
+let feedbackTimer: ReturnType<typeof setTimeout> | null = null
 
-const fakeParticipants = ref<FakeParticipant[]>([
-  { name: 'Alice Martin', email: 'alice@truegather.io', initials: 'AM' },
-  { name: 'Mathis Leroy', email: 'mathis@truegather.io', initials: 'ML' },
-  { name: 'Léa Bernard', email: 'lea@truegather.io', initials: 'LB' }
-])
-
-const participantCount = computed(() => {
+const parsedParticipants = computed(() => {
   return participants.value
     .split(/[\n,]+/)
     .map(item => item.trim())
-    .filter(Boolean).length
+    .filter(item => item.includes('@'))
+    .map(email => {
+      const localPart = email.split('@')[0] ?? ''
+      const parts = localPart.split(/[._-]/)
+      const initials = parts
+        .slice(0, 2)
+        .map(p => p[0]?.toUpperCase() ?? '')
+        .join('')
+      const displayName = parts
+        .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+        .join(' ')
+      return { email, initials, displayName }
+    })
 })
+
+const participantCount = computed(() => parsedParticipants.value.length)
 
 const startMeeting = () => {
   showFeedback.value = true
 
-  setTimeout(() => {
+  feedbackTimer = setTimeout(() => {
     showFeedback.value = false
   }, 2500)
 }
+
+onBeforeUnmount(() => {
+  if (feedbackTimer !== null) {
+    clearTimeout(feedbackTimer)
+  }
+})
 </script>

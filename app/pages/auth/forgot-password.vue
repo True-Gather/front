@@ -31,6 +31,7 @@
                 type="email"
                 placeholder="email@exemple.com"
                 autocomplete="email"
+                required
               />
             </div>
           </div>
@@ -87,20 +88,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 
 definePageMeta({
-  layout: 'auth' as any
+  layout: 'auth'
 })
 
 const email = ref('')
 const showSuccess = ref(false)
+let successTimer: ReturnType<typeof setTimeout> | null = null
 
 const handleSubmit = () => {
+  if (!email.value) return
+
   showSuccess.value = true
 
-  setTimeout(() => {
+  successTimer = setTimeout(() => {
     showSuccess.value = false
   }, 3500)
 }
+
+onBeforeUnmount(() => {
+  if (successTimer !== null) {
+    clearTimeout(successTimer)
+  }
+})
 </script>

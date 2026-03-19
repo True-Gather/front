@@ -56,6 +56,18 @@ a {
   text-decoration: none;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 button,
 input,
 textarea {
@@ -179,6 +191,16 @@ button {
   background: linear-gradient(135deg, var(--tg-primary) 0%, var(--tg-secondary) 100%);
   color: white;
   box-shadow: 0 10px 24px rgba(20, 184, 166, 0.28);
+}
+
+.tg-nav-item--disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.tg-nav-item--disabled:hover {
+  background: transparent;
+  transform: none;
 }
 
 .tg-nav-icon {
@@ -371,14 +393,6 @@ button {
   box-shadow: var(--tg-shadow-sm);
   border-radius: 24px;
   padding: 24px 26px 20px;
-}
-
-.tg-page-hero-copy {
-  background:
-    linear-gradient(135deg, rgba(20, 184, 166, 0.16), rgba(8, 145, 178, 0.10)),
-    rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(153, 246, 228, 0.7);
-  box-shadow: var(--tg-shadow-sm);
 }
 
 .tg-page-chip {
@@ -788,29 +802,5 @@ button {
 
   .tg-content {
     padding: 16px 16px 32px;
-  }
-}
-
-@media (max-width: 640px) {
-  .tg-header-actions {
-    flex-wrap: wrap;
-  }
-
-  .tg-profile-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .tg-form-actions {
-    flex-direction: column;
-  }
-
-  .tg-secondary-btn,
-  .tg-primary-btn {
-    width: 100%;
-  }
-
-  .tg-ai-panel {
-    width: min(320px, calc(100vw - 32px));
   }
 }

@@ -24,7 +24,7 @@
             <label for="new-password">Nouveau mot de passe</label>
 
             <div class="tg-auth-input-wrap tg-auth-input-wrap--password">
-              <span class="tg-auth-input-icon">🔒</span>
+              <span class="tg-auth-input-icon" aria-hidden="true">🔒</span>
               <input
                 id="new-password"
                 v-model="newPassword"
@@ -47,7 +47,7 @@
             <label for="confirm-password">Confirmer le mot de passe</label>
 
             <div class="tg-auth-input-wrap tg-auth-input-wrap--password">
-              <span class="tg-auth-input-icon">🔐</span>
+              <span class="tg-auth-input-icon" aria-hidden="true">🔐</span>
               <input
                 id="confirm-password"
                 v-model="confirmPassword"
@@ -95,7 +95,7 @@
           </transition>
         </form>
 
-        <NuxtLink to="/" class="tg-auth-secondary-link">
+        <NuxtLink to="/login" class="tg-auth-secondary-link">
           ← Retour à la connexion
         </NuxtLink>
       </div>
@@ -136,10 +136,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 
 definePageMeta({
-  layout: 'auth' as any
+  layout: 'auth'
 })
 
 const newPassword = ref('')
@@ -147,6 +147,7 @@ const confirmPassword = ref('')
 const showNewPassword = ref(false)
 const showConfirmPassword = ref(false)
 const showSuccess = ref(false)
+let successTimer: ReturnType<typeof setTimeout> | null = null
 
 const passwordState = computed<'idle' | 'match' | 'mismatch'>(() => {
   if (!newPassword.value && !confirmPassword.value) {
@@ -164,7 +165,7 @@ const handleSubmit = () => {
   if (newPassword.value && confirmPassword.value && newPassword.value === confirmPassword.value) {
     showSuccess.value = true
 
-    setTimeout(() => {
+    successTimer = setTimeout(() => {
       showSuccess.value = false
     }, 3500)
     return
@@ -172,4 +173,10 @@ const handleSubmit = () => {
 
   showSuccess.value = false
 }
+
+onBeforeUnmount(() => {
+  if (successTimer !== null) {
+    clearTimeout(successTimer)
+  }
+})
 </script>
