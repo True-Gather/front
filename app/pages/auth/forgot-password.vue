@@ -46,7 +46,7 @@
           </transition>
         </form>
 
-        <NuxtLink to="/" class="tg-auth-secondary-link">
+        <NuxtLink to="/auth/login" class="tg-auth-secondary-link">
           ← Retour à la connexion
         </NuxtLink>
       </div>
