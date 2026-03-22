@@ -1,8 +1,35 @@
+<script setup lang="ts">
+const route = useRoute()
+const { authUser, initials, fetchMe, logout } = useAuth()
+
+onMounted(async () => {
+  if (!authUser.value) {
+    await fetchMe()
+  }
+})
+
+const pageTitle = computed(() => {
+  if (route.path === '/meetings/create') {
+    return 'Créer un meeting'
+  }
+
+  return 'TrueGather'
+})
+
+const pageEyebrow = computed(() => {
+  if (route.path.startsWith('/meetings')) {
+    return 'Workspace · TrueGather'
+  }
+
+  return 'Secure collaboration workspace'
+})
+</script>
+
 <template>
   <header class="tg-header">
     <div class="tg-header-copy">
-      <p class="tg-header-eyebrow">Workspace · TrueGather</p>
-      <h1 class="tg-header-title">Créer un meeting</h1>
+      <p class="tg-header-eyebrow">{{ pageEyebrow }}</p>
+      <h1 class="tg-header-title">{{ pageTitle }}</h1>
     </div>
 
     <div class="tg-header-actions">
@@ -19,11 +46,11 @@
         <span>⚙️</span>
       </button>
 
-      <button class="tg-profile-btn" type="button">
-        <span class="tg-profile-avatar">RF</span>
+      <button class="tg-profile-btn" type="button" @click="logout">
+        <span class="tg-profile-avatar">{{ initials }}</span>
         <span class="tg-profile-copy">
-          <strong>Rayan</strong>
-          <small>Product workspace</small>
+          <strong>{{ authUser?.display_name || 'TrueGather User' }}</strong>
+          <small>{{ authUser?.email || 'Secure workspace' }}</small>
         </span>
       </button>
     </div>
