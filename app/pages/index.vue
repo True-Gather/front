@@ -26,13 +26,6 @@
         </button>
         <button class="menu-item">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          <span class="menu-label">Historique</span>
-        </button>
-        <button class="menu-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
             <circle cx="9" cy="7" r="4"></circle>
             <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -41,7 +34,7 @@
           <span class="menu-label">Groupes</span>
           <span class="badge">2</span>
         </button>
-        <button class="menu-item">
+        <button class="menu-item" @click="planningOpen = true">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
             <line x1="16" x2="16" y1="2" y2="6"></line>
@@ -58,7 +51,7 @@
       <!-- Header -->
       <header class="header">
         <div class="logo">
-          <div class="logo-icon">T</div>
+        <img src="/logo.jfif" alt="TruGather Logo" class="logo-icon-img" />
           <div class="logo-text">TrueGather</div>
         </div>
         <div class="header-actions">
@@ -80,12 +73,8 @@
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
           </button>
-          <button class="icon-btn primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </button>
+          <UserMenu />
+
         </div>
       </header>
 
@@ -99,7 +88,8 @@
 
           <!-- Action Cards -->
           <div class="actions-grid">
-            <button class="action-card">
+          <button class="action-card" @click="meetingOpen = true">
+
               <div class="action-icon" style="background: linear-gradient(135deg, #14b8a6, #0891b2);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="m22 8-6 4 6 4V8Z"></path>
@@ -133,7 +123,7 @@
               <div class="action-description">Consultez vos réunions passées</div>
             </button>
 
-            <button class="action-card">
+            <button class="action-card" @click="showCreateGroupModal = true">
               <div class="action-icon" style="background: linear-gradient(135deg, #10b981, #14b8a6);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -152,7 +142,7 @@
               <div class="action-description">Organisez vos contacts en groupes</div>
             </button>
 
-            <button class="action-card">
+            <button class="action-card" @click="planningOpen = true">
               <div class="action-icon" style="background: linear-gradient(135deg, #3b82f6, #6366f1);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
@@ -163,6 +153,7 @@
               </div>
               <div class="action-title">
                 Planifier
+
                 <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="5" x2="19" y1="12" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
@@ -323,10 +314,22 @@
       </div>
       <div class="chatbot-toggle" @click="toggleChat">💬</div>
     </div>
+    <CreateGroupModal v-if="showCreateGroupModal" @close="showCreateGroupModal = false" />
+    <CreateMeetingModal v-if="meetingOpen" @close="meetingOpen = false" />
+    <PlanningModal v-if="planningOpen" @close="planningOpen = false" />
+    <PlanningViewModal v-if="planningOpen" meetings="meetings" @close="planningOpen = false"/>
+
   </div>
 </template>
 
 <script setup>
+import CreateGroupModal from '../components/CreateGroup/CreateGroupModal.vue'
+const showCreateGroupModal = ref(false)
+import CreateMeetingModal from '../components/createmeeting/CreateMeetingModal.vue'
+const meetingOpen = ref(false)
+import UserMenu from '../components/UserMenu.vue'
+import PlanningModal from '../components/planning/PlanningModal.vue'
+const planningOpen = ref(false)
 const sidebarCollapsed = ref(false)
 const chatOpen = ref(false)
 const userInput = ref('')
@@ -424,6 +427,16 @@ body {
   color: #4b5563;
   font-size: 14px;
 }
+
+.logo-icon-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+  margin-top: 8px;
+  margin-left: -8px;
+}
+
 
 .menu-item.active {
   background: linear-gradient(to right, #14b8a6, #0891b2);
