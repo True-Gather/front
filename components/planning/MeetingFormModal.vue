@@ -11,7 +11,7 @@
 
         <!-- Date affichée -->
         <div class="form-date-badge">
-           {{ formattedDate }}
+          📅 {{ formattedDate }}
         </div>
 
         <!-- Titre -->
@@ -188,6 +188,7 @@ function addEmail() {
 // ── Groupes (à remplacer par appel API) ───────────────────
 const groupsOpen = ref(false)
 const availableGroups = ref([
+  // TODO: fetch depuis GET /groups
   { id: 1, name: 'Équipe Dev', memberCount: 6 },
   { id: 2, name: 'Design', memberCount: 3 },
   { id: 3, name: 'Management', memberCount: 4 },
@@ -201,6 +202,7 @@ function toggleGroup(group) {
 
 // ── Submit ─────────────────────────────────────────────────
 function submit() {
+  // TODO: POST /meetings avec le body ci-dessous
   emit('created', {
     title: form.value.title || `Meeting ${props.selectedDate}`,
     date: props.selectedDate,
@@ -307,12 +309,7 @@ function submit() {
   color: #111827;
   outline: none;
   transition: border 0.2s;
-  width: 100%;
-  box-sizing: border-box;
-  font-family: inherit;
-  background: white;
 }
-
 .form-group select:focus,
 .form-group input[type="email"]:focus,
 .form-group input[type="text"]:focus {
@@ -383,8 +380,6 @@ function submit() {
   font-size: 14px;
   color: #374151;
   transition: all 0.2s;
-  width: 100%;
-  font-family: inherit;
 }
 .groups-toggle:hover {
   border-color: #14b8a6;
@@ -515,7 +510,6 @@ function submit() {
   font-size: 14px;
   color: #374151;
   transition: background 0.2s;
-  font-family: inherit;
 }
 .btn-cancel:hover { background: #f3f4f6; }
 
@@ -529,7 +523,6 @@ function submit() {
   font-size: 14px;
   font-weight: 600;
   transition: opacity 0.2s;
-  font-family: inherit;
 }
 .btn-create:hover:not(:disabled) { opacity: 0.85; }
 .btn-create:disabled { opacity: 0.4; cursor: not-allowed; }

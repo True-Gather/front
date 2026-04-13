@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <!-- Sidebar -->
     <aside class="sidebar" :class="{ collapsed: sidebarCollapsed }">
       <button class="sidebar-toggle" @click="toggleSidebar">
         <svg id="toggleIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -34,24 +33,22 @@
           <span class="menu-label">Groupes</span>
           <span class="badge">2</span>
         </button>
-        <button class="menu-item" @click="planningViewOpen = true"> 
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-    <line x1="16" x2="16" y1="2" y2="6"></line>
-    <line x1="8" x2="8" y1="2" y2="6"></line>
-    <line x1="3" x2="21" y1="10" y2="10"></line>
-  </svg>
-  <span class="menu-label">Planning</span>
-</button>
+        <button class="menu-item" @click="planningViewOpen = true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+            <line x1="16" x2="16" y1="2" y2="6"></line>
+            <line x1="8" x2="8" y1="2" y2="6"></line>
+            <line x1="3" x2="21" y1="10" y2="10"></line>
+          </svg>
+          <span class="menu-label">Planning</span>
+        </button>
       </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="main">
-      <!-- Header -->
       <header class="header">
         <div class="logo">
-        <img src="/logo.jfif" alt="TrueGather Logo" class="logo-icon-img" />
+          <img src="/logo.jfif" alt="TrueGather Logo" class="logo-icon-img" />
           <div class="logo-text">TrueGather</div>
         </div>
         <div class="header-actions">
@@ -62,31 +59,27 @@
             </svg>
             <span class="notification-dot"></span>
           </button>
-          
+
           <button class="icon-btn" @click="showSettings = true">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
-          
           </button>
-          <UserMenu />
 
+          <UserMenu />
         </div>
       </header>
 
-      <!-- Content -->
       <div class="content">
         <div class="content-inner">
           <div class="page-title">
             <h2>Que souhaitez-vous faire ?</h2>
-            <p>Bienvenue sur votre tableau de bord TrueGather</p>
+            <p>Bienvenue {{ welcomeName }} sur votre tableau de bord TrueGather</p>
           </div>
 
-          <!-- Action Cards -->
           <div class="actions-grid">
-          <button class="action-card" @click="meetingOpen = true">
-
+            <button class="action-card" @click="meetingOpen = true">
               <div class="action-icon" style="background: linear-gradient(135deg, #14b8a6, #0891b2);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="m22 8-6 4 6 4V8Z"></path>
@@ -150,7 +143,6 @@
               </div>
               <div class="action-title">
                 Planifier
-
                 <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="5" x2="19" y1="12" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
@@ -160,14 +152,12 @@
             </button>
           </div>
 
-          <!-- Recent Meetings -->
           <div class="meetings-section">
             <div class="meetings-header">
               <h3>Meetings récents</h3>
               <a href="#" class="view-all">Voir tout</a>
             </div>
             <div>
-              <!-- Meeting 1 -->
               <div class="meeting-item">
                 <div class="meeting-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -207,7 +197,6 @@
                 </button>
               </div>
 
-              <!-- Meeting 2 -->
               <div class="meeting-item">
                 <div class="meeting-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -247,7 +236,6 @@
                 </button>
               </div>
 
-              <!-- Meeting 3 -->
               <div class="meeting-item">
                 <div class="meeting-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -292,7 +280,6 @@
       </div>
     </main>
 
-    <!-- Chatbot -->
     <div class="chatbot-container">
       <div class="chatbot-box" v-if="chatOpen">
         <div class="chatbot-header">
@@ -311,21 +298,37 @@
       </div>
       <div class="chatbot-toggle" @click="toggleChat">💬</div>
     </div>
-    <Notifications v-if="showNotifications" @close="showNotifications = false" />.
+
+    <Notifications v-if="showNotifications" @close="showNotifications = false" />
     <SettingsModal v-if="showSettings" @close="showSettings = false" />
     <CreateGroupModal v-if="showCreateGroupModal" @close="showCreateGroupModal = false" />
     <CreateMeetingModal v-if="meetingOpen" @close="meetingOpen = false" />
     <PlanningModal v-if="planningOpen" @close="planningOpen = false" />
-<PlanningViewModal v-if="planningViewOpen" :meetings="meetings" @close="planningViewOpen = false"/>
+    <PlanningViewModal v-if="planningViewOpen" :meetings="meetings" @close="planningViewOpen = false" />
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useAuth } from '~/composables/useAuth'
+
+import Notifications from '../../components/barrehorizontale/Notifications.vue'
+import SettingsModal from '../../components/barrehorizontale/SettingsModal.vue'
+import CreateGroupModal from '../../components/CreateGroup/CreateGroupModal.vue'
+import CreateMeetingModal from '../../components/createmeeting/CreateMeetingModal.vue'
+import UserMenu from '../../components/barrehorizontale/UserMenu.vue'
+import PlanningModal from '../../components/planning/PlanningModal.vue'
+import PlanningViewModal from '../../components/planning/PlanningViewModal.vue'
+
+const { authUser, fetchMe } = useAuth()
+const router = useRouter()
+const runtimeConfig = useRuntimeConfig()
+
 const meetings = ref([
   {
     id: 1,
-    title: "Sprint Planning Dev",
-    date: new Date().toISOString().split('T')[0], // Aujourd'hui
+    title: "Dev",
+    date: new Date().toISOString().split('T')[0],
     start: "09:30",
     end: "11:00",
     participants: ["dev-team@truegather.com", "cto@truegather.com"],
@@ -334,8 +337,8 @@ const meetings = ref([
   },
   {
     id: 2,
-    title: "Review Design System",
-    date: new Date().toISOString().split('T')[0], // Aujourd'hui
+    title: "Reunion",
+    date: new Date().toISOString().split('T')[0],
     start: "14:00",
     end: "15:30",
     participants: ["designer@truegather.com"],
@@ -344,8 +347,8 @@ const meetings = ref([
   },
   {
     id: 3,
-    title: "Café d'équipe (Sync)",
-    date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Demain
+    title: "Organisation",
+    date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
     start: "08:30",
     end: "09:15",
     participants: ["all@truegather.com"],
@@ -353,31 +356,22 @@ const meetings = ref([
     iaEnabled: false
   }
 ])
-import Notifications from '../components/barrehorizontale/Notifications.vue'
+
 const showNotifications = ref(false)
-
-import SettingsModal from '../components/barrehorizontale/SettingsModal.vue'
 const showSettings = ref(false)
-
-import CreateGroupModal from '../components/CreateGroup/CreateGroupModal.vue'
 const showCreateGroupModal = ref(false)
-
-import CreateMeetingModal from '../components/createmeeting/CreateMeetingModal.vue'
 const meetingOpen = ref(false)
-
-import UserMenu from '../components/barrehorizontale/UserMenu.vue'
-
-import PlanningModal from '../components/planning/PlanningModal.vue'
-import PlanningViewModal from '../components/planning/PlanningViewModal.vue'
 const planningViewOpen = ref(false)
 const planningOpen = ref(false)
-
 const sidebarCollapsed = ref(false)
 const chatOpen = ref(false)
 const userInput = ref('')
 const messages = ref([
   { type: 'bot', text: 'Bonjour 👋 Comment puis-je vous aider ?' }
 ])
+const welcomeName = computed(() => {
+  return authUser.value?.first_name || authUser.value?.display_name || 'utilisateur'
+})
 
 function toggleSidebar() {
   sidebarCollapsed.value = !sidebarCollapsed.value
@@ -395,6 +389,30 @@ function sendMessage() {
     messages.value.push({ type: 'bot', text: 'Je suis encore en développement 😊' })
   }, 500)
 }
+
+onMounted(async () => {
+  try {
+    if (!authUser.value) {
+      await fetchMe()
+    }
+
+    const backendBaseUrl =
+      runtimeConfig.public.backendBaseUrl || 'http://localhost:8080'
+
+    const response = await $fetch<{ authenticated?: boolean }>(
+      `${backendBaseUrl}/api/v1/auth/me`,
+      {
+        credentials: 'include'
+      }
+    )
+
+    if (!response?.authenticated) {
+      await router.replace('/')
+    }
+  } catch {
+    await router.replace('/')
+  }
+})
 </script>
 
 <style scoped>
@@ -479,7 +497,6 @@ body {
   margin-left: -8px;
 }
 
-
 .menu-item.active {
   background: linear-gradient(to right, #14b8a6, #0891b2);
   color: white;
@@ -542,19 +559,6 @@ body {
   gap: 12px;
 }
 
-.logo-icon {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #14b8a6, #0891b2);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  font-size: 20px;
-}
-
 .logo-text {
   font-size: 24px;
   font-weight: bold;
@@ -588,18 +592,6 @@ body {
   width: 20px;
   height: 20px;
   color: #4b5563;
-}
-
-.icon-btn.primary {
-  background: linear-gradient(135deg, #14b8a6, #0891b2);
-}
-
-.icon-btn.primary svg {
-  color: white;
-}
-
-.icon-btn.primary:hover {
-  box-shadow: 0 4px 8px rgba(20, 184, 166, 0.3);
 }
 
 .notification-dot {
@@ -843,7 +835,6 @@ body {
   color: #6b7280;
 }
 
-/* Chatbot */
 .chatbot-container {
   position: fixed;
   bottom: 20px;
@@ -934,4 +925,3 @@ body {
   cursor: pointer;
 }
 </style>
-

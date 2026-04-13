@@ -137,17 +137,17 @@
   </div>
 </template>
 
-<script setup>
-// Remplacer ces URLs par les vraies URLs Keycloak
-const KEYCLOAK_LOGIN_URL = 'https://keycloak.example.com/realms/truegather/protocol/openid-connect/auth?client_id=truegather-app&response_type=code&redirect_uri=http://localhost:3000'
-const KEYCLOAK_REGISTER_URL = 'https://keycloak.example.com/realms/truegather/protocol/openid-connect/registrations?client_id=truegather-app&response_type=code&redirect_uri=http://localhost:3000'
+<script setup lang="ts">
+const runtimeConfig = useRuntimeConfig()
+
+const backendBaseUrl = runtimeConfig.public.backendBaseUrl || 'http://localhost:8080'
 
 function handleLogin() {
-  window.location.href = KEYCLOAK_LOGIN_URL
+  window.location.href = `${backendBaseUrl}/api/v1/auth/login`
 }
 
 function handleRegister() {
-  window.location.href = KEYCLOAK_REGISTER_URL
+  window.location.href = `${backendBaseUrl}/api/v1/auth/register`
 }
 </script>
 

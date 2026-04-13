@@ -1,39 +1,63 @@
 <template>
   <div class="user-menu" ref="userMenuRef">
     <button class="icon-btn primary" @click="userMenuOpen = !userMenuOpen">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-        <circle cx="12" cy="7" r="4"></circle>
-      </svg>
+      <span class="avatar-text">{{ initials }}</span>
     </button>
 
     <div class="user-dropdown" v-if="userMenuOpen">
       <div class="dropdown-info">
-        <strong>Mon Compte</strong>
-        <span>adam@truegather.com</span>
+        <strong>{{ displayName }}</strong>
+        <span>{{ emailText }}</span>
       </div>
+
       <hr />
-      <button class="dropdown-item">👤 Profil</button>
-      <hr />
-      <button class="dropdown-item logout">🚪 Se déconnecter</button>
+
+      <button class="dropdown-item logout" @click="handleLogout">
+        🚪 Se déconnecter
+      </button>
     </div>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { useAuth } from '~/composables/useAuth'
 
 const userMenuOpen = ref(false)
-const userMenuRef = ref(null)
+const userMenuRef = ref<HTMLElement | null>(null)
 
-function handleClickOutside(e) {
-  if (userMenuRef.value && !userMenuRef.value.contains(e.target)) {
+const { authUser, initials, fetchMe, logout } = useAuth()
+
+const displayName = computed(() => {
+  if (!authUser.value) return 'Mon compte'
+  return authUser.value.display_name || 'Mon compte'
+})
+
+const emailText = computed(() => {
+  return authUser.value?.email || 'Utilisateur connecté'
+})
+
+function handleClickOutside(e: MouseEvent) {
+  if (userMenuRef.value && !userMenuRef.value.contains(e.target as Node)) {
     userMenuOpen.value = false
   }
 }
 
-onMounted(() => document.addEventListener('click', handleClickOutside))
-onUnmounted(() => document.removeEventListener('click', handleClickOutside))
+function handleLogout() {
+  userMenuOpen.value = false
+  logout()
+}
+
+onMounted(async () => {
+  document.addEventListener('click', handleClickOutside)
+  if (!authUser.value) {
+    await fetchMe()
+  }
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <style scoped>
@@ -66,6 +90,11 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
 }
 
+.avatar-text {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
 
 .user-dropdown {
   position: absolute;
@@ -75,7 +104,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  width: 200px;
+  width: 220px;
   z-index: 100;
   overflow: hidden;
 }
@@ -95,6 +124,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 .dropdown-info span {
   font-size: 12px;
   color: #6b7280;
+  word-break: break-word;
 }
 
 .dropdown-item {
