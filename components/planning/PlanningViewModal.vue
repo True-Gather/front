@@ -388,6 +388,17 @@ function getGroupName(id) {
 </script>
 
 <style scoped>
+.overlay,
+.modal,
+.detail-modal,
+button,
+span,
+div,
+h2,
+h3 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -668,6 +679,7 @@ function getGroupName(id) {
   font-size: 17px;
   font-weight: 700;
   color: #111827;
+  font-family: inherit; /* Pour être sûr */
 }
 
 .detail-body {
@@ -722,6 +734,7 @@ function getGroupName(id) {
   font-weight: 600;
   color: #111827;
   text-transform: capitalize;
+  font-family: inherit; 
 }
 
 .detail-divider {
