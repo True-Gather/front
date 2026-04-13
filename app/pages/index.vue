@@ -1,937 +1,515 @@
 <template>
-  <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar" :class="{ collapsed: sidebarCollapsed }">
-      <button class="sidebar-toggle" @click="toggleSidebar">
-        <svg id="toggleIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline v-if="sidebarCollapsed" points="9 18 15 12 9 6"></polyline>
-          <polyline v-else points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
-      <nav>
-        <button class="menu-item active">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-          <span class="menu-label">Accueil</span>
-        </button>
-        <button class="menu-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m22 8-6 4 6 4V8Z"></path>
-            <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
-          </svg>
-          <span class="menu-label">Meetings</span>
-          <span class="badge">3</span>
-        </button>
-        <button class="menu-item">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
-          <span class="menu-label">Groupes</span>
-          <span class="badge">2</span>
-        </button>
-        <button class="menu-item" @click="planningViewOpen = true"> 
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-    <line x1="16" x2="16" y1="2" y2="6"></line>
-    <line x1="8" x2="8" y1="2" y2="6"></line>
-    <line x1="3" x2="21" y1="10" y2="10"></line>
-  </svg>
-  <span class="menu-label">Planning</span>
-</button>
-      </nav>
-    </aside>
+  <div class="auth-root">
+    <!-- Animated background blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
 
-    <!-- Main Content -->
-    <main class="main">
-      <!-- Header -->
-      <header class="header">
-        <div class="logo">
-        <img src="/logo.jfif" alt="TrueGather Logo" class="logo-icon-img" />
-          <div class="logo-text">TrueGather</div>
-        </div>
-        <div class="header-actions">
-          <button class="icon-btn" @click="showNotifications = true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-            </svg>
-            <span class="notification-dot"></span>
-          </button>
-          
-          <button class="icon-btn" @click="showSettings = true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          
-          </button>
-          <UserMenu />
+    <!-- Grid pattern overlay -->
+    <div class="grid-overlay"></div>
 
-        </div>
-      </header>
-
-      <!-- Content -->
-      <div class="content">
-        <div class="content-inner">
-          <div class="page-title">
-            <h2>Que souhaitez-vous faire ?</h2>
-            <p>Bienvenue sur votre tableau de bord TrueGather</p>
+    <div class="auth-wrapper">
+      <!-- Left panel — branding -->
+      <div class="brand-panel">
+        <div class="brand-content">
+          <div class="brand-logo">
+            <div class="logo-shield">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <span class="brand-name">TrueGather</span>
           </div>
 
-          <!-- Action Cards -->
-          <div class="actions-grid">
-          <button class="action-card" @click="meetingOpen = true">
+          <div class="brand-headline">
+            <h1>Réunissez vos équipes,<br/><em>partout, à tout moment.</em></h1>
+            <p>La plateforme tout-en-un pour planifier, rejoindre et analyser vos visioconférences d'équipe.</p>
+          </div>
 
-              <div class="action-icon" style="background: linear-gradient(135deg, #14b8a6, #0891b2);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Feature pills -->
+          <div class="features">
+            <div class="feature-pill">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="m22 8-6 4 6 4V8Z"></path>
                   <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
                 </svg>
               </div>
-              <div class="action-title">
-                Créer un meeting
-                <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" x2="19" y1="12" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
+              <span>Meetings instantanés</span>
+            </div>
+            <div class="feature-pill">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a10 10 0 1 0 10 10"></path>
+                  <path d="M12 8v4l3 3"></path>
                 </svg>
               </div>
-              <div class="action-description">Démarrez une nouvelle visioconférence instantanément</div>
-            </button>
-
-            <button class="action-card">
-              <div class="action-icon" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
+              <span>Assistant IA intégré</span>
+            </div>
+            <div class="feature-pill">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                  <line x1="3" x2="21" y1="10" y2="10"></line>
                 </svg>
               </div>
-              <div class="action-title">
-                Historique des meetings
-                <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" x2="19" y1="12" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </div>
-              <div class="action-description">Consultez vos réunions passées</div>
-            </button>
-
-            <button class="action-card" @click="showCreateGroupModal = true">
-              <div class="action-icon" style="background: linear-gradient(135deg, #10b981, #14b8a6);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <span>Planning collaboratif</span>
+            </div>
+            <div class="feature-pill">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                   <circle cx="9" cy="7" r="4"></circle>
                   <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
                   <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
               </div>
-              <div class="action-title">
-                Créer un groupe
-                <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" x2="19" y1="12" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </div>
-              <div class="action-description">Organisez vos contacts en groupes</div>
-            </button>
-
-            <button class="action-card" @click="planningOpen = true">
-              <div class="action-icon" style="background: linear-gradient(135deg, #3b82f6, #6366f1);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-                  <line x1="16" x2="16" y1="2" y2="6"></line>
-                  <line x1="8" x2="8" y1="2" y2="6"></line>
-                  <line x1="3" x2="21" y1="10" y2="10"></line>
-                </svg>
-              </div>
-              <div class="action-title">
-                Planifier
-
-                <svg class="action-arrow" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" x2="19" y1="12" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </div>
-              <div class="action-description">Gérez vos réunions à venir</div>
-            </button>
+              <span>Gestion de groupes</span>
+            </div>
           </div>
 
-          <!-- Recent Meetings -->
-          <div class="meetings-section">
-            <div class="meetings-header">
-              <h3>Meetings récents</h3>
-              <a href="#" class="view-all">Voir tout</a>
+          <!-- Floating card decoration -->
+          <div class="deco-card deco-card-1">
+            <div class="deco-avatar">A</div>
+            <div class="deco-info">
+              <span class="deco-name">Alexandre</span>
+              <span class="deco-sub">Réunion design — En cours</span>
             </div>
-            <div>
-              <!-- Meeting 1 -->
-              <div class="meeting-item">
-                <div class="meeting-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m22 8-6 4 6 4V8Z"></path>
-                    <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
-                  </svg>
-                </div>
-                <div class="meeting-info">
-                  <div class="meeting-title">Réunion d'équipe - Sprint Planning</div>
-                  <div class="meeting-details">
-                    <span class="meeting-detail">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                      Aujourd'hui, 14:00
-                    </span>
-                    <span class="meeting-detail">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                      </svg>
-                      8 participants
-                    </span>
-                    <span>1h</span>
-                  </div>
-                </div>
-                <span class="meeting-status status-upcoming">À venir</span>
-                <button class="meeting-more">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="1"></circle>
-                    <circle cx="12" cy="5" r="1"></circle>
-                    <circle cx="12" cy="19" r="1"></circle>
-                  </svg>
-                </button>
-              </div>
+            <span class="deco-live">● Live</span>
+          </div>
 
-              <!-- Meeting 2 -->
-              <div class="meeting-item">
-                <div class="meeting-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m22 8-6 4 6 4V8Z"></path>
-                    <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
-                  </svg>
-                </div>
-                <div class="meeting-info">
-                  <div class="meeting-title">Présentation Client Q1</div>
-                  <div class="meeting-details">
-                    <span class="meeting-detail">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                      Aujourd'hui, 16:30
-                    </span>
-                    <span class="meeting-detail">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                      </svg>
-                      5 participants
-                    </span>
-                    <span>45min</span>
-                  </div>
-                </div>
-                <span class="meeting-status status-upcoming">À venir</span>
-                <button class="meeting-more">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="1"></circle>
-                    <circle cx="12" cy="5" r="1"></circle>
-                    <circle cx="12" cy="19" r="1"></circle>
-                  </svg>
-                </button>
-              </div>
-
-              <!-- Meeting 3 -->
-              <div class="meeting-item">
-                <div class="meeting-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m22 8-6 4 6 4V8Z"></path>
-                    <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
-                  </svg>
-                </div>
-                <div class="meeting-info">
-                  <div class="meeting-title">Daily Standup</div>
-                  <div class="meeting-details">
-                    <span class="meeting-detail">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                      Hier, 09:00
-                    </span>
-                    <span class="meeting-detail">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                      </svg>
-                      12 participants
-                    </span>
-                    <span>15min</span>
-                  </div>
-                </div>
-                <span class="meeting-status status-completed">Terminé</span>
-                <button class="meeting-more">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="1"></circle>
-                    <circle cx="12" cy="5" r="1"></circle>
-                    <circle cx="12" cy="19" r="1"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
+          <div class="deco-card deco-card-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Standup quotidien planifié — 09:00</span>
           </div>
         </div>
       </div>
-    </main>
 
-    <!-- Chatbot -->
-    <div class="chatbot-container">
-      <div class="chatbot-box" v-if="chatOpen">
-        <div class="chatbot-header">
-          Assistant
-          <span @click="toggleChat" style="cursor:pointer">✖</span>
-        </div>
-        <div class="chatbot-messages" ref="chatMessages">
-          <div v-for="(msg, index) in messages" :key="index" :class="msg.type === 'bot' ? 'bot-message' : 'user-message'">
-            {{ msg.text }}
+      <!-- Right panel — actions -->
+      <div class="form-panel">
+        <div class="form-card">
+          <div class="form-greeting">
+            <div class="greeting-logo">
+              <div class="logo-shield-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <span class="greeting-brand">TrueGather</span>
+            </div>
+            <h2>Bienvenue</h2>
+            <p>Accédez à votre espace de collaboration sécurisé via votre compte d'organisation.</p>
           </div>
-        </div>
-        <div class="chatbot-input">
-          <input type="text" v-model="userInput" @keyup.enter="sendMessage" placeholder="Écrire un message..." />
-          <button @click="sendMessage">➤</button>
+
+          <div class="action-btns">
+            <button class="cta-btn" @click="handleLogin">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                <polyline points="10 17 15 12 10 7"></polyline>
+                <line x1="15" x2="3" y1="12" y2="12"></line>
+              </svg>
+              <span>Se connecter</span>
+            </button>
+
+            <button class="cta-btn outline" @click="handleRegister">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <line x1="19" x2="19" y1="8" y2="14"></line>
+                <line x1="22" x2="16" y1="11" y2="11"></line>
+              </svg>
+              <span>Créer un compte</span>
+            </button>
+          </div>
+
+          <p class="sso-note">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            Authentification sécurisée via SSO
+          </p>
         </div>
       </div>
-      <div class="chatbot-toggle" @click="toggleChat">💬</div>
     </div>
-    <Notifications v-if="showNotifications" @close="showNotifications = false" />.
-    <SettingsModal v-if="showSettings" @close="showSettings = false" />
-    <CreateGroupModal v-if="showCreateGroupModal" @close="showCreateGroupModal = false" />
-    <CreateMeetingModal v-if="meetingOpen" @close="meetingOpen = false" />
-    <PlanningModal v-if="planningOpen" @close="planningOpen = false" />
-<PlanningViewModal v-if="planningViewOpen" :meetings="meetings" @close="planningViewOpen = false"/>
   </div>
 </template>
 
 <script setup>
-const meetings = ref([
-  {
-    id: 1,
-    title: "Sprint Planning Dev",
-    date: new Date().toISOString().split('T')[0], // Aujourd'hui
-    start: "09:30",
-    end: "11:00",
-    participants: ["dev-team@truegather.com", "cto@truegather.com"],
-    groupIds: [1],
-    iaEnabled: true
-  },
-  {
-    id: 2,
-    title: "Review Design System",
-    date: new Date().toISOString().split('T')[0], // Aujourd'hui
-    start: "14:00",
-    end: "15:30",
-    participants: ["designer@truegather.com"],
-    groupIds: [2],
-    iaEnabled: false
-  },
-  {
-    id: 3,
-    title: "Café d'équipe (Sync)",
-    date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Demain
-    start: "08:30",
-    end: "09:15",
-    participants: ["all@truegather.com"],
-    groupIds: [1, 2, 3],
-    iaEnabled: false
-  }
-])
-import Notifications from '../components/barrehorizontale/Notifications.vue'
-const showNotifications = ref(false)
+// Remplacer ces URLs par les vraies URLs Keycloak
+const KEYCLOAK_LOGIN_URL = 'https://keycloak.example.com/realms/truegather/protocol/openid-connect/auth?client_id=truegather-app&response_type=code&redirect_uri=http://localhost:3000'
+const KEYCLOAK_REGISTER_URL = 'https://keycloak.example.com/realms/truegather/protocol/openid-connect/registrations?client_id=truegather-app&response_type=code&redirect_uri=http://localhost:3000'
 
-import SettingsModal from '../components/barrehorizontale/SettingsModal.vue'
-const showSettings = ref(false)
-
-import CreateGroupModal from '../components/CreateGroup/CreateGroupModal.vue'
-const showCreateGroupModal = ref(false)
-
-import CreateMeetingModal from '../components/createmeeting/CreateMeetingModal.vue'
-const meetingOpen = ref(false)
-
-import UserMenu from '../components/barrehorizontale/UserMenu.vue'
-
-import PlanningModal from '../components/planning/PlanningModal.vue'
-import PlanningViewModal from '../components/planning/PlanningViewModal.vue'
-const planningViewOpen = ref(false)
-const planningOpen = ref(false)
-
-const sidebarCollapsed = ref(false)
-const chatOpen = ref(false)
-const userInput = ref('')
-const messages = ref([
-  { type: 'bot', text: 'Bonjour 👋 Comment puis-je vous aider ?' }
-])
-
-function toggleSidebar() {
-  sidebarCollapsed.value = !sidebarCollapsed.value
+function handleLogin() {
+  window.location.href = KEYCLOAK_LOGIN_URL
 }
 
-function toggleChat() {
-  chatOpen.value = !chatOpen.value
-}
-
-function sendMessage() {
-  if (!userInput.value.trim()) return
-  messages.value.push({ type: 'user', text: userInput.value })
-  userInput.value = ''
-  setTimeout(() => {
-    messages.value.push({ type: 'bot', text: 'Je suis encore en développement 😊' })
-  }, 500)
+function handleRegister() {
+  window.location.href = KEYCLOAK_REGISTER_URL
 }
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;1,400&display=swap');
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: linear-gradient(135deg, #f0fdfa 0%, #cffafe 50%, #d1fae5 100%);
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.auth-root {
   min-height: 100vh;
-}
-
-.container {
-  display: flex;
-  height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: linear-gradient(135deg, #f0fdfa 0%, #cffafe 50%, #d1fae5 100%);
-}
-
-.sidebar {
-  background: white;
-  border-right: 1px solid #99f6e4;
-  width: 256px;
-  transition: width 0.3s;
+  display: flex;
+  align-items: stretch;
   position: relative;
+  overflow: hidden;
+  font-family: 'Outfit', sans-serif;
 }
 
-.sidebar.collapsed {
-  width: 80px;
-}
-
-.sidebar-toggle {
+/* ── Background decoration ── */
+.bg-blob {
   position: absolute;
-  right: -12px;
-  top: 24px;
-  background: white;
-  border: 1px solid #99f6e4;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
+  filter: blur(80px);
+  opacity: 0.45;
+  pointer-events: none;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.blob-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #14b8a6, transparent);
+  top: -150px; left: -100px;
+  animation-duration: 14s;
+}
+.blob-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #0891b2, transparent);
+  bottom: -100px; right: 20%;
+  animation-duration: 10s;
+}
+.blob-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, #10b981, transparent);
+  top: 40%; right: -80px;
+  animation-duration: 16s;
+}
+
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(30px, 20px) scale(1.08); }
+}
+
+.grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(20,184,166,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20,184,166,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* ── Layout ── */
+.auth-wrapper {
+  display: flex;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Brand panel ── */
+.brand-panel {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  padding: 60px 48px;
 }
 
-.sidebar-toggle:hover {
-  background: #f0fdfa;
-}
-
-.sidebar nav {
-  padding: 16px;
-  margin-top: 16px;
-}
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
-  background: none;
-  width: 100%;
-  color: #4b5563;
-  font-size: 14px;
-}
-
-.logo-icon-img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  display: block;
-  margin-top: 8px;
-  margin-left: -8px;
-}
-
-
-.menu-item.active {
-  background: linear-gradient(to right, #14b8a6, #0891b2);
-  color: white;
-  box-shadow: 0 4px 6px rgba(20, 184, 166, 0.3);
-}
-
-.menu-item:not(.active):hover {
-  background: #f0fdfa;
-}
-
-.menu-item svg {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-}
-
-.menu-label {
-  flex: 1;
-  text-align: left;
-}
-
-.sidebar.collapsed .menu-label,
-.sidebar.collapsed .badge {
-  display: none;
-}
-
-.badge {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-}
-
-.menu-item:not(.active) .badge {
-  background: #ccfbf1;
-  color: #0f766e;
-}
-
-.main {
-  flex: 1;
+.brand-content {
+  max-width: 480px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  gap: 40px;
 }
 
-.header {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid #99f6e4;
-  padding: 16px 32px;
+.brand-logo {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 14px;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-icon {
-  width: 40px;
-  height: 40px;
+.logo-shield {
+  width: 52px; height: 52px;
   background: linear-gradient(135deg, #14b8a6, #0891b2);
-  border-radius: 12px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-weight: bold;
-  font-size: 20px;
+  box-shadow: 0 8px 24px rgba(20,184,166,0.4);
 }
 
-.logo-text {
-  font-size: 24px;
-  font-weight: bold;
+.brand-name {
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(to right, #0d9488, #0891b2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.brand-headline h1 {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1f2937;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+
+.brand-headline h1 em {
+  font-style: normal;
+  font-family: 'Lora', serif;
   background: linear-gradient(to right, #0d9488, #0891b2);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.header-actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.icon-btn {
-  padding: 8px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background 0.2s;
-  position: relative;
-}
-
-.icon-btn:hover {
-  background: #f0fdfa;
-}
-
-.icon-btn svg {
-  width: 20px;
-  height: 20px;
-  color: #4b5563;
-}
-
-.icon-btn.primary {
-  background: linear-gradient(135deg, #14b8a6, #0891b2);
-}
-
-.icon-btn.primary svg {
-  color: white;
-}
-
-.icon-btn.primary:hover {
-  box-shadow: 0 4px 8px rgba(20, 184, 166, 0.3);
-}
-
-.notification-dot {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 8px;
-  height: 8px;
-  background: #ef4444;
-  border-radius: 50%;
-}
-
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px 32px;
-}
-
-.content-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
-.page-title {
-  margin-bottom: 32px;
-}
-
-.page-title h2 {
-  font-size: 30px;
-  color: #1f2937;
-  margin-bottom: 8px;
-}
-
-.page-title p {
+.brand-headline p {
+  font-size: 16px;
   color: #6b7280;
+  line-height: 1.6;
+  font-weight: 400;
 }
 
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-  margin-bottom: 32px;
+/* Feature pills */
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.action-card {
+.feature-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.3s;
-  border: none;
-  text-align: left;
-  position: relative;
-  overflow: hidden;
-}
-
-.action-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-}
-
-.action-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-  transition: transform 0.3s;
-}
-
-.action-card:hover .action-icon {
-  transform: scale(1.1);
-}
-
-.action-icon svg {
-  width: 24px;
-  height: 24px;
-  color: white;
-}
-
-.action-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.action-arrow {
-  width: 20px;
-  height: 20px;
-  color: #9ca3af;
-  transition: all 0.3s;
-}
-
-.action-card:hover .action-arrow {
-  color: #14b8a6;
-  transform: translateX(4px);
-}
-
-.action-description {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.meetings-section {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.meetings-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.meetings-header h3 {
-  font-size: 20px;
-  color: #1f2937;
-}
-
-.view-all {
-  color: #14b8a6;
-  text-decoration: none;
-  font-size: 14px;
+  border: 1px solid rgba(20,184,166,0.2);
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-size: 13px;
   font-weight: 500;
+  color: #374151;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.view-all:hover {
-  color: #0d9488;
-}
-
-.meeting-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  transition: background 0.2s;
-}
-
-.meeting-item:hover {
-  background: #f9fafb;
-}
-
-.meeting-icon {
-  width: 48px;
-  height: 48px;
+.feature-icon {
+  width: 26px; height: 26px;
   background: linear-gradient(135deg, #14b8a6, #0891b2);
-  border-radius: 12px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
   flex-shrink: 0;
 }
 
-.meeting-icon svg {
-  width: 24px;
-  height: 24px;
-  color: white;
+/* Decoration cards */
+.deco-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 16px;
+  padding: 14px 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+  font-size: 13px;
+  color: #374151;
+  animation: float 6s ease-in-out infinite;
 }
 
-.meeting-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.meeting-title {
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 4px;
-}
-
-.meeting-details {
-  display: flex;
-  gap: 16px;
-  font-size: 14px;
-  color: #6b7280;
-  flex-wrap: wrap;
-}
-
-.meeting-detail {
+.deco-card-1 {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 12px;
+  align-self: flex-start;
+  margin-left: -10px;
 }
 
-.meeting-detail svg {
-  width: 16px;
-  height: 16px;
-}
-
-.meeting-status {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.status-upcoming {
-  background: #dbeafe;
-  color: #1e40af;
-}
-
-.status-completed {
-  background: #f3f4f6;
-  color: #4b5563;
-}
-
-.meeting-more {
-  padding: 8px;
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-radius: 8px;
-  opacity: 0;
-  transition: all 0.2s;
-}
-
-.meeting-item:hover .meeting-more {
-  opacity: 1;
-}
-
-.meeting-more:hover {
-  background: #f3f4f6;
-}
-
-.meeting-more svg {
-  width: 20px;
-  height: 20px;
-  color: #6b7280;
-}
-
-/* Chatbot */
-.chatbot-container {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 999;
+.deco-card-2 {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-end;
+  margin-right: -10px;
+  animation-delay: -3s;
+  font-weight: 500;
+  color: #0d9488;
 }
 
-.chatbot-toggle {
-  width: 55px;
-  height: 55px;
-  background: #4f46e5;
-  color: white;
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+.deco-avatar {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #14b8a6, #0891b2);
   border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 14px; flex-shrink: 0;
+}
+
+.deco-info { display: flex; flex-direction: column; gap: 2px; }
+.deco-name { font-weight: 600; color: #111827; font-size: 13px; }
+.deco-sub  { font-size: 11px; color: #9ca3af; }
+
+.deco-live {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: #10b981;
+  background: #d1fae5;
+  padding: 3px 8px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+
+/* ── Form panel ── */
+.form-panel {
+  width: 460px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  cursor: pointer;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  padding: 40px 32px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid rgba(255,255,255,0.8);
 }
 
-.chatbot-box {
-  width: 280px;
-  height: 360px;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+.form-card {
+  width: 100%;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  margin-bottom: 10px;
+  gap: 32px;
 }
 
-.chatbot-header {
-  background: #4f46e5;
-  color: white;
-  padding: 12px;
+.form-greeting {
   display: flex;
-  justify-content: space-between;
-  font-weight: bold;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.chatbot-messages {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
+.greeting-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.logo-shield-sm {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #14b8a6, #0891b2);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(20,184,166,0.35);
+}
+
+.greeting-brand {
+  font-size: 20px;
+  font-weight: 800;
+  background: linear-gradient(to right, #0d9488, #0891b2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.form-greeting h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.5px;
+}
+
+.form-greeting p {
   font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
 }
 
-.bot-message {
-  background: #f3f4f6;
-  padding: 8px 12px;
-  border-radius: 12px;
-  margin-bottom: 8px;
-  width: fit-content;
-}
-
-.user-message {
-  background: #4f46e5;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 12px;
-  margin-bottom: 8px;
-  width: fit-content;
-  margin-left: auto;
-}
-
-.chatbot-input {
+/* Action buttons */
+.action-btns {
   display: flex;
-  border-top: 1px solid #eee;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.chatbot-input input {
-  flex: 1;
-  border: none;
-  padding: 10px;
-  outline: none;
-}
-
-.chatbot-input button {
-  background: #4f46e5;
+.cta-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #14b8a6, #0891b2);
   color: white;
   border: none;
-  padding: 0 15px;
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 6px 20px rgba(20,184,166,0.4);
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(20,184,166,0.5);
+}
+
+.cta-btn:active { transform: translateY(0); }
+
+.cta-btn.outline {
+  background: white;
+  color: #0d9488;
+  border: 2px solid rgba(20,184,166,0.3);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.cta-btn.outline:hover {
+  border-color: #14b8a6;
+  background: #f0fdfa;
+  box-shadow: 0 8px 20px rgba(20,184,166,0.15);
+}
+
+/* SSO note */
+.sso-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.sso-note svg { color: #14b8a6; flex-shrink: 0; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .brand-panel { display: none; }
+  .form-panel {
+    width: 100%;
+    padding: 48px 24px;
+    background: linear-gradient(135deg, #f0fdfa, #cffafe);
+    border-left: none;
+  }
 }
 </style>
-
