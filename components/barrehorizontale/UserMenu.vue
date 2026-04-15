@@ -1,7 +1,8 @@
 <template>
   <div class="user-menu" ref="userMenuRef">
     <button class="icon-btn primary" @click="userMenuOpen = !userMenuOpen">
-      <span class="avatar-text">{{ initials }}</span>
+      <img v-if="avatarDataUrl" :src="avatarDataUrl" class="avatar-photo" alt="Photo de profil" />
+      <span v-else class="avatar-text">{{ initials }}</span>
     </button>
 
     <div class="user-dropdown" v-if="userMenuOpen">
@@ -22,11 +23,13 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useAuth } from '~/composables/useAuth'
+import { useAvatar } from '~/composables/useAvatar'
 
 const userMenuOpen = ref(false)
 const userMenuRef = ref<HTMLElement | null>(null)
 
 const { authUser, initials, fetchMe, logout } = useAuth()
+const { avatarDataUrl } = useAvatar()
 
 const displayName = computed(() => {
   if (!authUser.value) return 'Mon compte'
@@ -90,6 +93,13 @@ onUnmounted(() => {
   box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
 }
 
+.avatar-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
 .avatar-text {
   font-size: 14px;
   font-weight: 800;
@@ -100,8 +110,8 @@ onUnmounted(() => {
   position: absolute;
   top: 48px;
   right: 0;
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   width: 220px;
@@ -118,12 +128,12 @@ onUnmounted(() => {
 
 .dropdown-info strong {
   font-size: 14px;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .dropdown-info span {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-secondary);
   word-break: break-word;
 }
 
@@ -135,12 +145,12 @@ onUnmounted(() => {
   text-align: left;
   cursor: pointer;
   font-size: 14px;
-  color: #374151;
+  color: var(--text-primary);
   transition: background 0.2s;
 }
 
 .dropdown-item:hover {
-  background: #f0fdfa;
+  background: var(--item-hover);
 }
 
 .dropdown-item.logout {
@@ -153,7 +163,7 @@ onUnmounted(() => {
 
 hr {
   border: none;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--border-color);
   margin: 0;
 }
 </style>
