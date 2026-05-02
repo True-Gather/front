@@ -6,7 +6,6 @@ type AuthUser = {
   display_name: string
   first_name?: string | null
   last_name?: string | null
-  profile_photo_url?: string | null
 }
 
 type AuthResponse = {
@@ -42,13 +41,6 @@ export const useAuth = () => {
   const logout = () => {
     authUser.value = null
     authChecked.value = false
-    // Nettoie le localStorage (état verify-email et autres clés de session locale).
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('tg_email_verified')
-    }
-    // Navigation directe vers l'endpoint de logout (GET) :
-    // le navigateur applique fiablement le Set-Cookie Max-Age=0 sur la réponse
-    // de navigation, et Keycloak peut effacer sa propre session SSO via ses cookies.
     window.location.href = `${backendBaseUrl}/api/v1/auth/logout`
   }
 
