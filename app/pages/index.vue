@@ -140,7 +140,7 @@
 <script setup lang="ts">
 const runtimeConfig = useRuntimeConfig()
 
-const backendBaseUrl = runtimeConfig.public.backendBaseUrl || 'http://localhost:8080'
+const backendBaseUrl = runtimeConfig.public.backendBaseUrl || 'http://localhost:8082'
 
 function handleLogin() {
   window.location.href = `${backendBaseUrl}/api/v1/auth/login`

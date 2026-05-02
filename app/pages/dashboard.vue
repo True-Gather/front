@@ -397,7 +397,7 @@ onMounted(async () => {
     }
 
     const backendBaseUrl =
-      runtimeConfig.public.backendBaseUrl || 'http://localhost:8080'
+      runtimeConfig.public.backendBaseUrl || 'http://localhost:8082'
 
     const response = await $fetch<{ authenticated?: boolean }>(
       `${backendBaseUrl}/api/v1/auth/me`,

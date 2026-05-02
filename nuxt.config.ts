@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
-      backendBaseUrl: 'http://localhost:8080'
+      backendBaseUrl: 'http://localhost:8082'
     }
   }
 })
