@@ -17,118 +17,229 @@
         <button class="close-btn" @click="$emit('close')">✖</button>
       </div>
 
-      <!-- Body -->
-      <div class="modal-body">
-
-        <!-- Inviter par mail -->
-        <div class="field">
-          <label>Inviter par email</label>
-          <div class="email-input-row">
-            <input
-              v-model="emailInput"
-              type="email"
-              placeholder="exemple@email.com"
-              @keyup.enter="addEmail"
-            />
-            <button class="add-btn" @click="addEmail">+</button>
-          </div>
-          <div class="tags" v-if="emails.length">
-            <span class="tag" v-for="(email, i) in emails" :key="i">
-              {{ email }}
-              <span class="tag-remove" @click="removeEmail(i)">×</span>
-            </span>
-          </div>
+      <!-- Success state -->
+      <div v-if="meetingLink" class="modal-body success-body">
+        <div class="success-icon">✓</div>
+        <p class="success-title">Réunion créée !</p>
+        <p class="success-subtitle">Partagez ce lien avec vos participants</p>
+        <div class="link-box">
+          <span class="link-text">{{ meetingLink }}</span>
+          <button class="copy-btn" @click="copyLink">{{ copied ? 'Copié !' : 'Copier' }}</button>
         </div>
-
-        <!-- Inviter un groupe -->
-        <div class="field">
-          <label>Inviter un groupe</label>
-          <select v-model="selectedGroup">
-            <option value="">-- Aucun groupe --</option>
-            <option value="equipe-dev">Équipe Dev</option>
-            <option value="equipe-design">Équipe Design</option>
-            <option value="direction">Direction</option>
-          </select>
-        </div>
-
-        <!-- Toggle IA -->
-        <div class="field toggle-row">
-          <div class="toggle-info">
-            <span class="toggle-label">Assistant IA</span>
-            <span class="toggle-desc">Transcription et résumé automatique</span>
-          </div>
-          <div class="toggle" :class="{ active: useAI }" @click="useAI = !useAI">
-            <div class="toggle-thumb"></div>
-          </div>
-        </div>
-
-        <!-- Toggle Micro -->
-        <div class="field toggle-row">
-          <div class="toggle-info">
-            <div class="toggle-label-row">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                <line x1="12" x2="12" y1="19" y2="22"></line>
-              </svg>
-              <span class="toggle-label">Microphone</span>
-            </div>
-            <span class="toggle-desc">Activer le micro au démarrage</span>
-          </div>
-          <div class="toggle" :class="{ active: micOn }" @click="micOn = !micOn">
-            <div class="toggle-thumb"></div>
-          </div>
-        </div>
-
-        <!-- Toggle Caméra -->
-        <div class="field toggle-row">
-          <div class="toggle-info">
-            <div class="toggle-label-row">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m22 8-6 4 6 4V8Z"></path>
-                <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
-              </svg>
-              <span class="toggle-label">Caméra</span>
-            </div>
-            <span class="toggle-desc">Activer la caméra au démarrage</span>
-          </div>
-          <div class="toggle" :class="{ active: camOn }" @click="camOn = !camOn">
-            <div class="toggle-thumb"></div>
-          </div>
-        </div>
-
+        <div class="room-code">Code : <strong>{{ roomCode }}</strong></div>
+        <button class="start-btn full-width" @click="$emit('close')">Fermer</button>
       </div>
 
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button class="cancel-btn" @click="$emit('close')">Annuler</button>
-        <button class="start-btn" @click="startMeeting">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m22 8-6 4 6 4V8Z"></path>
-            <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
-          </svg>
-          Démarrer l'appel
-        </button>
-      </div>
+      <!-- Form state -->
+      <template v-else>
+        <div class="modal-body">
+
+          <!-- Titre -->
+          <div class="field">
+            <label>Titre de la réunion</label>
+            <input v-model="title" type="text" placeholder="Ex: Réunion d'équipe" />
+          </div>
+
+          <!-- Inviter par mail -->
+          <div class="field">
+            <label>Inviter des participants</label>
+            <div class="search-wrapper">
+              <input
+                v-model="emailInput"
+                type="text"
+                placeholder="Rechercher par nom ou email..."
+                @input="onSearchInput"
+                @keyup.enter="addEmail"
+                @blur="hideSuggestionsDelayed"
+              />
+              <div v-if="showSuggestions" class="suggestions">
+                <div v-if="searchLoading" class="suggestion-empty">Recherche...</div>
+                <template v-else-if="suggestions.length">
+                  <div
+                    v-for="u in suggestions"
+                    :key="u.keycloak_id"
+                    class="suggestion-item"
+                    @mousedown.prevent="selectUser(u)"
+                  >
+                    <div class="suggestion-avatar">{{ userInitials(u.display_name) }}</div>
+                    <div class="suggestion-info">
+                      <div class="suggestion-name">{{ u.display_name }}</div>
+                      <div class="suggestion-email">{{ u.email }}</div>
+                    </div>
+                  </div>
+                </template>
+                <div v-else class="suggestion-empty">Aucun utilisateur TrueGather trouvé.</div>
+              </div>
+            </div>
+            <div class="tags" v-if="emails.length">
+              <span class="tag" v-for="(email, i) in emails" :key="i">
+                {{ email }}
+                <span class="tag-remove" @click="removeEmail(i)">×</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Inviter un groupe -->
+          <div class="field">
+            <label>Inviter un groupe</label>
+            <select v-model="selectedGroupId">
+              <option value="">-- Aucun groupe --</option>
+              <option v-for="g in groups" :key="g.group_id" :value="g.group_id">
+                {{ g.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Toggle IA -->
+          <div class="field toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-label">Assistant IA</span>
+              <span class="toggle-desc">Transcription et résumé automatique</span>
+            </div>
+            <div class="toggle" :class="{ active: useAI }" @click="useAI = !useAI">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+
+          <!-- Toggle Micro -->
+          <div class="field toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label-row">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" x2="12" y1="19" y2="22"></line>
+                </svg>
+                <span class="toggle-label">Microphone</span>
+              </div>
+              <span class="toggle-desc">Activer le micro au démarrage</span>
+            </div>
+            <div class="toggle" :class="{ active: micOn }" @click="micOn = !micOn">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+
+          <!-- Toggle Caméra -->
+          <div class="field toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-label-row">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m22 8-6 4 6 4V8Z"></path>
+                  <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
+                </svg>
+                <span class="toggle-label">Caméra</span>
+              </div>
+              <span class="toggle-desc">Activer la caméra au démarrage</span>
+            </div>
+            <div class="toggle" :class="{ active: camOn }" @click="camOn = !camOn">
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+
+          <!-- Erreur -->
+          <p v-if="error" class="error-msg">{{ error }}</p>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button class="cancel-btn" @click="$emit('close')">Annuler</button>
+          <button class="start-btn" :disabled="loading" @click="startMeeting">
+            <svg v-if="!loading" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 8-6 4 6 4V8Z"></path>
+              <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
+            </svg>
+            {{ loading ? 'Création...' : 'Démarrer l\'appel' }}
+          </button>
+        </div>
+      </template>
 
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+
+const runtimeConfig = useRuntimeConfig()
+const backendBaseUrl = computed(() => runtimeConfig.public.backendBaseUrl || 'http://localhost:8080')
 
 const emit = defineEmits(['close'])
 
 const emailInput = ref('')
 const emails = ref([])
-const selectedGroup = ref('')
+const selectedGroupId = ref('')
 const useAI = ref(true)
 const micOn = ref(true)
 const camOn = ref(true)
+const title = ref('')
+const groups = ref([])
+const loading = ref(false)
+const error = ref('')
+const meetingLink = ref('')
+const roomCode = ref('')
+const copied = ref(false)
+
+const suggestions = ref([])
+const searchLoading = ref(false)
+const showSuggestions = ref(false)
+let searchTimeout = null
+
+onMounted(async () => {
+  const defaultDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })
+  title.value = `Réunion du ${defaultDate}`
+
+  try {
+    const res = await fetch('/api/v1/groups')
+    if (res.ok) {
+      const data = await res.json()
+      groups.value = data.groups ?? data
+    }
+  } catch {}
+})
+
+function onSearchInput() {
+  clearTimeout(searchTimeout)
+  const q = emailInput.value.trim()
+  if (q.length < 2) {
+    suggestions.value = []
+    showSuggestions.value = false
+    return
+  }
+  showSuggestions.value = true
+  searchLoading.value = true
+  searchTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`${backendBaseUrl.value}/api/v1/users/search?q=${encodeURIComponent(q)}`, { credentials: 'include' })
+      if (res.ok) {
+        const data = await res.json()
+        suggestions.value = data.users ?? data
+      }
+    } catch {}
+    searchLoading.value = false
+  }, 250)
+}
+
+function selectUser(u) {
+  if (!emails.value.includes(u.email)) {
+    emails.value.push(u.email)
+  }
+  emailInput.value = ''
+  suggestions.value = []
+  showSuggestions.value = false
+}
+
+function hideSuggestionsDelayed() {
+  setTimeout(() => { showSuggestions.value = false }, 150)
+}
+
+function userInitials(name) {
+  if (!name) return '?'
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+}
 
 function addEmail() {
   const val = emailInput.value.trim()
@@ -136,21 +247,59 @@ function addEmail() {
     emails.value.push(val)
   }
   emailInput.value = ''
+  suggestions.value = []
+  showSuggestions.value = false
 }
 
 function removeEmail(i) {
   emails.value.splice(i, 1)
 }
 
-function startMeeting() {
-  console.log({
-    emails: emails.value,
-    group: selectedGroup.value,
-    useAI: useAI.value,
-    mic: micOn.value,
-    cam: camOn.value
-  })
-  emit('close')
+async function startMeeting() {
+  error.value = ''
+  if (!title.value.trim()) {
+    error.value = 'Le titre est requis.'
+    return
+  }
+
+  loading.value = true
+  try {
+    const body = {
+      title: title.value.trim(),
+      participant_emails: emails.value,
+      group_id: selectedGroupId.value || null,
+      ai_enabled: useAI.value,
+      microphone_enabled: micOn.value,
+      camera_enabled: camOn.value,
+    }
+
+    const res = await fetch('/api/v1/meetings/instant', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      error.value = data.message || 'Impossible de créer la réunion.'
+      return
+    }
+
+    const data = await res.json()
+    meetingLink.value = data.meeting_link
+    roomCode.value = data.room_code
+  } catch {
+    error.value = 'Erreur réseau. Réessayez.'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function copyLink() {
+  await navigator.clipboard.writeText(meetingLink.value)
+  copied.value = true
+  setTimeout(() => { copied.value = false }, 2000)
 }
 </script>
 
@@ -178,7 +327,6 @@ function startMeeting() {
   overflow: hidden;
 }
 
-/* Header */
 .modal-header {
   padding: 24px;
   border-bottom: 1px solid #e5e7eb;
@@ -225,7 +373,6 @@ function startMeeting() {
   background: #f3f4f6;
 }
 
-/* Body */
 .modal-body {
   padding: 24px;
   overflow-y: auto;
@@ -247,6 +394,7 @@ label {
   color: #374151;
 }
 
+input[type="text"],
 input[type="email"],
 select {
   width: 100%;
@@ -257,8 +405,10 @@ select {
   outline: none;
   transition: border 0.2s;
   background: white;
+  box-sizing: border-box;
 }
 
+input[type="text"]:focus,
 input[type="email"]:focus,
 select:focus {
   border-color: #14b8a6;
@@ -317,7 +467,6 @@ select:focus {
   color: #ef4444;
 }
 
-/* Toggles */
 .toggle-row {
   flex-direction: row;
   align-items: center;
@@ -381,7 +530,12 @@ select:focus {
   left: 25px;
 }
 
-/* Footer */
+.error-msg {
+  color: #ef4444;
+  font-size: 13px;
+  margin: 0;
+}
+
 .modal-footer {
   padding: 20px 24px;
   border-top: 1px solid #e5e7eb;
@@ -421,8 +575,168 @@ select:focus {
   box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
 }
 
-.start-btn:hover {
+.start-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.start-btn:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(20, 184, 166, 0.5);
+}
+
+.full-width {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Success */
+.success-body {
+  align-items: center;
+  text-align: center;
+  padding: 40px 24px;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(135deg, #14b8a6, #0891b2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.success-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 4px;
+}
+
+.success-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 20px;
+}
+
+.link-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 10px 14px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+}
+
+.link-text {
+  flex: 1;
+  font-size: 13px;
+  color: #374151;
+  word-break: break-all;
+  text-align: left;
+}
+
+.copy-btn {
+  background: #14b8a6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.room-code {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.suggestion-item:hover {
+  background: #f0fdf4;
+}
+
+.suggestion-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #14b8a6, #0891b2);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.suggestion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.suggestion-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-email {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-empty {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
 }
 </style>

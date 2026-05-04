@@ -2,7 +2,7 @@
   <div class="container">
     <aside class="sidebar" :class="{ collapsed: sidebarCollapsed }">
       <button class="sidebar-toggle" @click="toggleSidebar">
-        <svg id="toggleIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="toggleIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-text)">
           <polyline v-if="sidebarCollapsed" points="9 18 15 12 9 6"></polyline>
           <polyline v-else points="15 18 9 12 15 6"></polyline>
         </svg>
@@ -48,7 +48,7 @@
     <main class="main">
       <header class="header">
         <div class="logo">
-          <img src="/logo.jfif" alt="TrueGather Logo" class="logo-icon-img" />
+          <img src="/logo.png" alt="TrueGather Logo" class="logo-icon-img" />
           <div class="logo-text">TrueGather</div>
         </div>
         <div class="header-actions">
@@ -397,7 +397,7 @@ onMounted(async () => {
     }
 
     const backendBaseUrl =
-      runtimeConfig.public.backendBaseUrl || 'http://localhost:8080'
+      runtimeConfig.public.backendBaseUrl || 'http://localhost:8082'
 
     const response = await $fetch<{ authenticated?: boolean }>(
       `${backendBaseUrl}/api/v1/auth/me`,
@@ -424,7 +424,7 @@ onMounted(async () => {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: linear-gradient(135deg, #f0fdfa 0%, #cffafe 50%, #d1fae5 100%);
+  background: var(--bg-page);
   min-height: 100vh;
 }
 
@@ -432,12 +432,12 @@ body {
   display: flex;
   height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: linear-gradient(135deg, #f0fdfa 0%, #cffafe 50%, #d1fae5 100%);
+  background: var(--bg-page);
 }
 
 .sidebar {
-  background: white;
-  border-right: 1px solid #99f6e4;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
   width: 256px;
   transition: width 0.3s;
   position: relative;
@@ -451,8 +451,8 @@ body {
   position: absolute;
   right: -12px;
   top: 24px;
-  background: white;
-  border: 1px solid #99f6e4;
+  background: var(--bg-sidebar);
+  border: 1px solid var(--border-color);
   border-radius: 50%;
   width: 24px;
   height: 24px;
@@ -464,7 +464,7 @@ body {
 }
 
 .sidebar-toggle:hover {
-  background: #f0fdfa;
+  background: var(--item-hover);
 }
 
 .sidebar nav {
@@ -484,7 +484,7 @@ body {
   border: none;
   background: none;
   width: 100%;
-  color: #4b5563;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -498,13 +498,13 @@ body {
 }
 
 .menu-item.active {
-  background: linear-gradient(to right, #14b8a6, #0891b2);
+  background: linear-gradient(to right, var(--accent-from), var(--accent-to));
   color: white;
-  box-shadow: 0 4px 6px rgba(20, 184, 166, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .menu-item:not(.active):hover {
-  background: #f0fdfa;
+  background: var(--item-hover);
 }
 
 .menu-item svg {
@@ -532,8 +532,8 @@ body {
 }
 
 .menu-item:not(.active) .badge {
-  background: #ccfbf1;
-  color: #0f766e;
+  background: var(--accent-badge-bg);
+  color: var(--accent-badge-text);
 }
 
 .main {
@@ -544,9 +544,9 @@ body {
 }
 
 .header {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--bg-header);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid #99f6e4;
+  border-bottom: 1px solid var(--border-color);
   padding: 16px 32px;
   display: flex;
   align-items: center;
@@ -562,7 +562,7 @@ body {
 .logo-text {
   font-size: 24px;
   font-weight: bold;
-  background: linear-gradient(to right, #0d9488, #0891b2);
+  background: linear-gradient(to right, var(--accent-from), var(--accent-to));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -585,13 +585,13 @@ body {
 }
 
 .icon-btn:hover {
-  background: #f0fdfa;
+  background: var(--item-hover);
 }
 
 .icon-btn svg {
   width: 20px;
   height: 20px;
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 .notification-dot {
@@ -621,12 +621,12 @@ body {
 
 .page-title h2 {
   font-size: 30px;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .page-title p {
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .actions-grid {
@@ -637,7 +637,7 @@ body {
 }
 
 .action-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -678,7 +678,7 @@ body {
 .action-title {
   font-size: 18px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
@@ -688,22 +688,22 @@ body {
 .action-arrow {
   width: 20px;
   height: 20px;
-  color: #9ca3af;
+  color: var(--text-muted);
   transition: all 0.3s;
 }
 
 .action-card:hover .action-arrow {
-  color: #14b8a6;
+  color: var(--accent-text);
   transform: translateX(4px);
 }
 
 .action-description {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .meetings-section {
-  background: white;
+  background: var(--bg-card);
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -718,18 +718,18 @@ body {
 
 .meetings-header h3 {
   font-size: 20px;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .view-all {
-  color: #14b8a6;
+  color: var(--accent-text);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
 }
 
 .view-all:hover {
-  color: #0d9488;
+  color: var(--accent-from);
 }
 
 .meeting-item {
@@ -743,13 +743,13 @@ body {
 }
 
 .meeting-item:hover {
-  background: #f9fafb;
+  background: var(--item-hover);
 }
 
 .meeting-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #14b8a6, #0891b2);
+  background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -770,7 +770,7 @@ body {
 
 .meeting-title {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 4px;
 }
 
@@ -778,7 +778,7 @@ body {
   display: flex;
   gap: 16px;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
   flex-wrap: wrap;
 }
 

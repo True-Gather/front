@@ -1,0 +1,93 @@
+/* ── Variables de thème ── */
+
+/* Accent teal fixe (identité visuelle / logo) */
+:root {
+  --accent-from: #14b8a6;
+  --accent-to: #0891b2;
+  --accent-text: #0d9488;
+  --accent-light-bg: #f0fdfa;
+  --accent-border: #99f6e4;
+  --accent-badge-bg: #ccfbf1;
+  --accent-badge-text: #0f766e;
+}
+
+/* ====== CLAIR (défaut) ====== */
+:root {
+  --bg-page: linear-gradient(135deg, #f0fdfa 0%, #cffafe 50%, #d1fae5 100%);
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.9);
+  --border-color: #99f6e4;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --input-bg: #ffffff;
+  --input-border: #e5e7eb;
+  --item-hover: #f0fdfa;
+  --scrollbar-thumb: #99f6e4;
+}
+
+/* ====== SOMBRE ====== */
+[data-theme="dark"] {
+  --bg-page: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  --bg-sidebar: #1e293b;
+  --bg-card: #1e293b;
+  --bg-header: rgba(15, 23, 42, 0.9);
+  --border-color: #334155;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --input-bg: #0f172a;
+  --input-border: #334155;
+  --item-hover: #0f172a;
+  --scrollbar-thumb: #334155;
+  --accent-text: #2dd4bf;
+  --accent-light-bg: #0f2d29;
+  --accent-border: #134e4a;
+  --accent-badge-bg: #134e4a;
+  --accent-badge-text: #2dd4bf;
+}
+
+/* ── Styles globaux ── */
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar {
+  background: var(--bg-sidebar) !important;
+  border-right-color: var(--border-color) !important;
+}
+
+.header {
+  background: var(--bg-header) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+.action-card,
+.meeting-item,
+.modal-container,
+.form-modal {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+.meeting-details,
+.action-description,
+.setting-desc,
+.menu-label {
+  color: var(--text-secondary) !important;
+}
+
+.container {
+  background: var(--bg-page) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
