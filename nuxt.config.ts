@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   css: ['~/assets/theme.css'],
   runtimeConfig: {
     public: {
-      backendBaseUrl: 'http://localhost:8080'
+      backendBaseUrl: 'http://localhost:8082'
     }
   },
   nitro: {
