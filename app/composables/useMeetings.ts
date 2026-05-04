@@ -49,16 +49,21 @@ export function useMeetings() {
   function toCalendarFormat(m: Meeting) {
     const start = new Date(m.scheduled_start_at)
     const end = new Date(m.scheduled_end_at)
+    const pad = (n: number) => String(n).padStart(2, '0')
     return {
       ...m,
-      date: start.toISOString().split('T')[0],
-      start: `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`,
-      end: `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`,
+      date: `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`,
+      start: `${pad(start.getHours())}:${pad(start.getMinutes())}`,
+      end: `${pad(end.getHours())}:${pad(end.getMinutes())}`,
     }
   }
 
-  /** Meetings enrichis avec date/start/end pour le calendrier */
-  const calendarMeetings = computed(() => meetings.value.map(toCalendarFormat))
+  /** Meetings enrichis avec date/start/end pour le calendrier (scheduled uniquement) */
+  const calendarMeetings = computed(() =>
+    meetings.value
+      .filter(m => m.scheduled_start_at && m.scheduled_end_at)
+      .map(toCalendarFormat)
+  )
 
   // ── Fetch ───────────────────────────────────────────────────────────────────
 

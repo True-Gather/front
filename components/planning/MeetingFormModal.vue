@@ -82,16 +82,35 @@
 
         <!-- Participants par email -->
         <div class="form-group">
-          <label>Inviter des participants (email)</label>
-          <div class="email-input-row">
+          <label>Inviter des participants</label>
+          <div class="search-wrapper">
             <input
               v-model="emailInput"
-              type="email"
-              placeholder="prenom@exemple.com"
+              type="text"
+              placeholder="Rechercher par nom ou email..."
               class="form-input"
+              @input="onSearchInput"
               @keydown.enter.prevent="addEmail"
+              @blur="hideSuggestionsDelayed"
             />
-            <button class="btn-add-email" @click="addEmail">+</button>
+            <div v-if="showSuggestions" class="suggestions">
+              <div v-if="searchLoading" class="suggestion-empty">Recherche...</div>
+              <template v-else-if="suggestions.length">
+                <div
+                  v-for="u in suggestions"
+                  :key="u.keycloak_id"
+                  class="suggestion-item"
+                  @mousedown.prevent="selectUser(u)"
+                >
+                  <div class="suggestion-avatar">{{ userInitials(u.display_name) }}</div>
+                  <div class="suggestion-info">
+                    <div class="suggestion-name">{{ u.display_name }}</div>
+                    <div class="suggestion-email">{{ u.email }}</div>
+                  </div>
+                </div>
+              </template>
+              <div v-else class="suggestion-empty">Aucun utilisateur TrueGather trouvé.</div>
+            </div>
           </div>
           <div v-if="form.participant_emails.length" class="chips">
             <span
@@ -108,13 +127,13 @@
         <!-- Groupes -->
         <div class="form-group">
           <label>Inviter un groupe</label>
-          <div class="groups-selector">
+          <div v-if="availableGroups.length" class="groups-selector">
             <button
               v-for="g in availableGroups"
-              :key="g.id"
+              :key="g.group_id"
               class="group-btn"
-              :class="{ selected: form.group_ids.includes(g.id) }"
-              @click="toggleGroup(g.id)"
+              :class="{ selected: form.group_ids.includes(g.group_id) }"
+              @click="toggleGroup(g.group_id)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -124,9 +143,10 @@
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
               </svg>
               {{ g.name }}
-              <span class="group-count">{{ g.memberCount }}</span>
+              <span class="group-count">{{ g.member_count }}</span>
             </button>
           </div>
+          <p v-else class="no-groups">Aucun groupe disponible.</p>
         </div>
 
         <!-- IA -->
@@ -164,7 +184,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useMeetings, type ParticipantConflict } from '~/composables/useMeetings'
 
 const props = defineProps<{
@@ -176,10 +196,14 @@ const emit = defineEmits(['close', 'created'])
 
 const { createMeeting } = useMeetings()
 
+const runtimeConfig = useRuntimeConfig()
+const backendBaseUrl = computed(() => runtimeConfig.public.backendBaseUrl || 'http://localhost:8080')
+
 // ── Date affichée ─────────────────────────────────────────────────────────────
 const formattedDate = computed(() => {
   if (!props.selectedDate) return ''
-  return new Date(props.selectedDate).toLocaleDateString('fr-FR', {
+  const [y, m, d] = props.selectedDate.split('-').map(Number)
+  return new Date(y!, m! - 1, d!).toLocaleDateString('fr-FR', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   })
 })
@@ -216,25 +240,78 @@ const submitting = ref(false)
 const hostConflictMsg = ref<string | null>(null)
 const participantConflicts = ref<ParticipantConflict[]>([])
 
+const suggestions = ref<any[]>([])
+const searchLoading = ref(false)
+const showSuggestions = ref(false)
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
 // ── Emails ────────────────────────────────────────────────────────────────────
+function onSearchInput() {
+  if (searchTimeout) clearTimeout(searchTimeout)
+  const q = emailInput.value.trim()
+  if (q.length < 2) {
+    suggestions.value = []
+    showSuggestions.value = false
+    return
+  }
+  showSuggestions.value = true
+  searchLoading.value = true
+  searchTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(`${backendBaseUrl.value}/api/v1/users/search?q=${encodeURIComponent(q)}`, { credentials: 'include' })
+      if (res.ok) {
+        const data = await res.json()
+        suggestions.value = data.users ?? data
+      }
+    } catch {}
+    searchLoading.value = false
+  }, 250)
+}
+
+function selectUser(u: any) {
+  if (!form.value.participant_emails.includes(u.email)) {
+    form.value.participant_emails.push(u.email)
+  }
+  emailInput.value = ''
+  suggestions.value = []
+  showSuggestions.value = false
+}
+
+function hideSuggestionsDelayed() {
+  setTimeout(() => { showSuggestions.value = false }, 150)
+}
+
+function userInitials(name: string) {
+  if (!name) return '?'
+  return name.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2)
+}
+
 function addEmail() {
   const val = emailInput.value.trim()
   if (val && !form.value.participant_emails.includes(val)) {
     form.value.participant_emails.push(val)
   }
   emailInput.value = ''
+  suggestions.value = []
+  showSuggestions.value = false
 }
 
 function removeEmail(index: number) {
   form.value.participant_emails.splice(index, 1)
 }
 
-// ── Groupes (TODO: fetch depuis GET /groups) ──────────────────────────────────
-const availableGroups = ref([
-  { id: 'group-1', name: 'Équipe Dev', memberCount: 6 },
-  { id: 'group-2', name: 'Design', memberCount: 3 },
-  { id: 'group-3', name: 'Management', memberCount: 4 },
-])
+// ── Groupes ───────────────────────────────────────────────────────────────────
+const availableGroups = ref<any[]>([])
+
+onMounted(async () => {
+  try {
+    const res = await fetch('/api/v1/groups', { credentials: 'include' })
+    if (res.ok) {
+      const data = await res.json()
+      availableGroups.value = data.groups ?? data
+    }
+  } catch {}
+})
 
 function toggleGroup(id: string) {
   const idx = form.value.group_ids.indexOf(id)
@@ -480,18 +557,74 @@ hostConflictMsg.value = String(result.error ?? 'Erreur inconnue')  }
 
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* Email chips */
-.email-input-row { display: flex; gap: 8px; }
-.btn-add-email {
+/* Search wrapper / autocomplete */
+.search-wrapper { position: relative; }
+
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.suggestion-item:hover { background: #f0fdf4; }
+
+.suggestion-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   background: linear-gradient(135deg, #14b8a6, #0891b2);
   color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 18px;
+  font-size: 12px;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
+
+.suggestion-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.suggestion-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.suggestion-email {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.suggestion-empty {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.no-groups { font-size: 13px; color: #9ca3af; margin: 0; }
+
+/* Email chips */
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .chip {
   display: flex;

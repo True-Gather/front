@@ -212,16 +212,22 @@ function getMonday(date: Date): Date {
 
 const weekDays = computed(() => {
   const names = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+  const pad = (n: number) => String(n).padStart(2, '0')
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(currentMonday.value)
     d.setDate(d.getDate() + i)
-    return { name: names[i], number: d.getDate(), date: d.toISOString().split('T')[0] }
+    return { name: names[i], number: d.getDate(), date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` }
   })
 })
 
 const weekLabel = computed(() => {
-  const s = new Date(weekDays.value[0].date)
-  const e = new Date(weekDays.value[6].date)
+  const start = weekDays.value[0]
+  const end = weekDays.value[6]
+  if (!start || !end) return ''
+  const [sy, sm, sd] = start.date.split('-').map(Number)
+  const [ey, em, ed] = end.date.split('-').map(Number)
+  const s = new Date(sy!, sm! - 1, sd!)
+  const e = new Date(ey!, em! - 1, ed!)
   return `${s.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} – ${e.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}`
 })
 
@@ -232,7 +238,11 @@ function nextWeek() {
   const d = new Date(currentMonday.value); d.setDate(d.getDate() + 7); currentMonday.value = d
 }
 
-function isToday(dateStr: string) { return dateStr === new Date().toISOString().split('T')[0] }
+function isToday(dateStr: string) {
+  const now = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return dateStr === `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+}
 
 const hours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2,'0')}:00`)
 
@@ -241,7 +251,7 @@ function getMeetingsForDay(date: string) {
 }
 
 function timeToMinutes(t: string) {
-  const [h, m] = t.split(':').map(Number); return h * 60 + m
+  const [h = 0, m = 0] = t.split(':').map(Number); return h * 60 + m
 }
 
 function getMeetingStyle(meeting: any) {
@@ -261,7 +271,8 @@ const selectedMeeting = ref<any>(null)
 function openDetail(m: any) { selectedMeeting.value = m }
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('fr-FR', {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  return new Date(y!, m! - 1, d!).toLocaleDateString('fr-FR', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   })
 }

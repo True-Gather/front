@@ -160,13 +160,14 @@ function getMonday(date: Date): Date {
 const weekDays = computed(() => {
   const days = []
   const names = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
+  const pad = (n: number) => String(n).padStart(2, '0')
   for (let i = 0; i < 7; i++) {
     const d = new Date(currentMonday.value)
     d.setDate(d.getDate() + i)
     days.push({
       name: names[i],
       number: d.getDate(),
-      date: d.toISOString().split('T')[0],
+      date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
     })
   }
   return days
@@ -175,8 +176,11 @@ const weekDays = computed(() => {
 const weekLabel = computed(() => {
   const start = weekDays.value[0]
   const end = weekDays.value[6]
-  const s = new Date(start.date)
-  const e = new Date(end.date)
+  if (!start || !end) return ''
+  const [sy, sm, sd] = start.date.split('-').map(Number)
+  const [ey, em, ed] = end.date.split('-').map(Number)
+  const s = new Date(sy!, sm! - 1, sd!)
+  const e = new Date(ey!, em! - 1, ed!)
   return `${s.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} – ${e.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}`
 })
 
@@ -192,7 +196,9 @@ function nextWeek() {
 }
 
 function isToday(dateStr: string): boolean {
-  return dateStr === new Date().toISOString().split('T')[0]
+  const now = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return dateStr === `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
 }
 
 // ── Heures ────────────────────────────────────────────────────────────────────
@@ -204,7 +210,7 @@ function getMeetingsForDay(date: string) {
 }
 
 function timeToMinutes(t: string): number {
-  const [h, m] = t.split(':').map(Number)
+  const [h = 0, m = 0] = t.split(':').map(Number)
   return h * 60 + m
 }
 
