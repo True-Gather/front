@@ -6,6 +6,7 @@ type AuthUser = {
   display_name: string
   first_name?: string | null
   last_name?: string | null
+  profile_photo_url?: string | null
 }
 
 type AuthResponse = {
