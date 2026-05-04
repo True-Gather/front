@@ -60,10 +60,6 @@
         <template v-if="activeTab === 'securite'">
           <p class="section-label">Changer le mot de passe</p>
           <div class="form-group">
-            <label>Mot de passe actuel</label>
-            <input v-model="pwForm.current" type="password" placeholder="••••••••" autocomplete="current-password" />
-          </div>
-          <div class="form-group">
             <label>Nouveau mot de passe</label>
             <input v-model="pwForm.new_password" type="password" placeholder="••••••••" autocomplete="new-password" />
           </div>
@@ -271,7 +267,7 @@ const prefs = ref({
 })
 
 // Changement de mot de passe
-const pwForm = ref({ current: '', new_password: '', confirm: '' })
+const pwForm = ref({ new_password: '', confirm: '' })
 const pwSaving = ref(false)
 const pwError = ref('')
 const pwSuccess = ref('')
@@ -280,10 +276,6 @@ async function changePassword() {
   pwError.value = ''
   pwSuccess.value = ''
 
-  if (!pwForm.value.current) {
-    pwError.value = 'Veuillez saisir votre mot de passe actuel.'
-    return
-  }
   if (pwForm.value.new_password.length < 14) {
     pwError.value = 'Le nouveau mot de passe doit contenir au moins 14 caractères.'
     return
@@ -301,15 +293,16 @@ async function changePassword() {
       method: 'PUT',
       credentials: 'include',
       body: {
-        current_password: pwForm.value.current,
         new_password: pwForm.value.new_password,
         confirm_password: pwForm.value.confirm,
       },
     })
-    pwSuccess.value = 'Mot de passe modifié avec succès.'
-    pwForm.value = { current: '', new_password: '', confirm: '' }
+    pwSuccess.value = 'Mot de passe modifié avec succès. Un email de confirmation vous a été envoyé.'
+    pwForm.value = { new_password: '', confirm: '' }
   } catch (e: any) {
-    pwError.value = e?.data?.message || 'Erreur lors du changement de mot de passe.'
+    const raw: string = e?.data?.message || 'Erreur lors du changement de mot de passe.'
+    // Supprimer les préfixes techniques ajoutés par le backend ("Bad request: ", etc.)
+    pwError.value = raw.replace(/^(Bad request|Upstream error|Internal server error|Validation error):\s*/i, '')
   } finally {
     pwSaving.value = false
   }
